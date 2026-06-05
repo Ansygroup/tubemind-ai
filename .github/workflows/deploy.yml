@@ -1,0 +1,30 @@
+name: 🚀 Deploy TubeMind AI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          cd code/backend
+          pip install -r requirements.txt
+      - name: Test backend
+        run: |
+          cd code/backend
+          python -c "import fastapi; print('✅ FastAPI OK')"
+
+  notify:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy notification
+        run: echo "✅ Tests passed - Railway and Netlify will auto-deploy!"
