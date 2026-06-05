@@ -1,0 +1,21 @@
+name: 🤖 Daily AI Tasks
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Trigger daily video generation
+        run: |
+          if [ -n "$BACKEND_URL" ]; then
+            curl -X POST "$BACKEND_URL/agents/run" \
+              -H "Content-Type: application/json" \
+              -d '{"agent_name": "scheduler", "channel_id": "all", "params": {"trigger": "daily"}}' || true
+          fi
+        env:
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
